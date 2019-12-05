@@ -3,6 +3,8 @@ export class Gui {
     constructor() {
         //determines variables
         this.gameField = document.getElementById("gameField");
+        this.menu = document.getElementById("menu");
+        this.mode;
         this.cardArray = [];
         this.cardCount;
         this.symbolArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
@@ -12,13 +14,38 @@ export class Gui {
     }
 
     //called funtion from Logic to render the game
-    render(cardCount) {
-        
+    render(cardCount, mode) {
+        this.mode = mode;
         this.cardCount = cardCount; //makes global variable
+        this._hideMenu(); //hides the menu for selecting difficulty
+        this._revealClickCount(); //reveals the click count
         this._createCards(); //call to create cards
         this._fillCards(); //call to assign properties
         this._fillCardsWithSymbols() //call to fill cards with symbols
 
+    }
+
+     //hides the menu
+     _hideMenu() {
+
+        //sets the height to 0 and hides it
+        this.menu.style = "visibility: hidden;" + "height: 0px";
+
+        //if hard mode is selected makes sure, the cards can fit (normal 18:9 computer screen)
+        if (this.mode == "hard") {
+
+            this.gameField.style = "width: 800px";
+
+        } else if (this.mode == "easy") {
+
+            //this.gameField.style = "width: 400px";
+
+        }
+
+    }
+
+    _revealClickCount() {
+        document.getElementById("clickCountDiv").style = "visibility: visible;";
     }
 
     //creates cards
