@@ -8,8 +8,8 @@ export class Gui {
         this.cardArray = [];
         this.cardCount;
         this.symbolArray = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
-        //this.filledCards = [];
         this.usedNums = [];
+        this.symbols = [];
 
     }
 
@@ -22,6 +22,9 @@ export class Gui {
         this._createCards(); //call to create cards
         this._fillCards(); //call to assign properties
         this._fillCardsWithSymbols() //call to fill cards with symbols
+        this._assignIdsToSymbols();
+    
+
 
     }
 
@@ -36,7 +39,7 @@ export class Gui {
 
             this.gameField.style = "width: 800px";
 
-        } else if (this.mode == "easy") {
+        } else if (this.mode == "easy") { //not used
 
             //this.gameField.style = "width: 400px";
 
@@ -88,7 +91,7 @@ export class Gui {
             //makes card pairs with same symbols
             for (let y = 0; y < 2; y++) {
 
-                this._getRandomCard().innerText = symbol; //inserts symbol into card
+                this._makeSymbolDiv(this._getRandomCard(), symbol, i); //makes a div inside the card div with the symbol
                 
             }
         }
@@ -133,5 +136,29 @@ export class Gui {
         }
 
     }
+
+    //creates a div with the sybol inside and iserts it into the card
+    _makeSymbolDiv(card, symbol, index) {
+
+        let symbolDiv = document.createElement("div"); //creates the div
+        symbolDiv.innerText = symbol; //pushes the symbol inside the div
+        symbolDiv.className = "symbol"; //assigns a class
+        symbolDiv.title = "symbolPair" + index; //assigns the title to the corresponding pair
+        symbolDiv.style = "visibility: hidden;"; //hides the symbol
+        card.appendChild(symbolDiv); // pushes this div into the card div
+
+    }
+
+    //assigns ids to symbols, based on the card they are in
+    _assignIdsToSymbols() {
+
+        for (let i = 0; i < this.cardCount; i++) {
+
+            document.getElementById("card" + i).children.item(0).id = "symbol" + i;
+            
+        }
+    }
+
+
 
 }
