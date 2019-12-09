@@ -18,7 +18,7 @@ export class Gui {
         this.mode = mode;
         this.cardCount = cardCount; //makes global variable
         this._hideMenu(); //hides the menu for selecting difficulty
-        this._revealClickCount(); //reveals the click count
+        this._revealClickCountandScore(); //reveals the click count
         this._createCards(); //call to create cards
         this._fillCards(); //call to assign properties
         this._fillCardsWithSymbols() //call to fill cards with symbols
@@ -47,8 +47,9 @@ export class Gui {
 
     }
 
-    _revealClickCount() {
+    _revealClickCountandScore() {
         document.getElementById("clickCountDiv").style = "visibility: visible;";
+        document.getElementById("scoreDiv").style =      "visibility: visible;";
     }
 
     //creates cards

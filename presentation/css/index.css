@@ -28,11 +28,19 @@ html, body {
     display: flex;
     flex-direction: row;
 }
+#scoreDiv {
+    visibility: hidden;
+    display: flex;
+    flex-direction: row;
+}
 #clicks {
     margin: 0;
     margin-left: 10px;
 }
-
+#score {
+    margin: 0;
+    margin-left: 10px;
+}
 #field {
     display: flex;
     justify-content: center;

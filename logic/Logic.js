@@ -15,6 +15,7 @@ export class Logic {
         this.selectedPair = [];
         this.thisSymbol;
         this.clickCounter = document.getElementById("clicks");
+        this.scoreDiv = document.getElementById("score");
         this.clicks = 0;
         this.score;
     }
@@ -92,6 +93,7 @@ export class Logic {
         console.log(clickedCard.children.item(0));
         this.thisSymbol = clickedCard.children.item(0);
         this._increaseClickCounter();
+        this._showScore();
 
         this._addToPair();
     
@@ -103,6 +105,12 @@ export class Logic {
     _increaseClickCounter() {
         this.clicks++;
         this.clickCounter.innerText = this.clicks;
+    }
+
+    _showScore() {
+
+        this.scoreDiv.innerText = this._score();
+
     }
 
     //adds selection to pair
@@ -266,9 +274,17 @@ export class Logic {
     }
 
     //calculates the score
-    _Score() {
-        this.score = this.clicks / this.numOfCards;
-        return this.score;
+    _score() {
+        this.score = Math.floor((this.clicks / this.numOfCards) * 100);
+        if (this.score >= 100) {
+            //this.score = magic code to make sense;
+            return this.score;
+        } else {
+            return "...";
+        }
+        
+
+
     }
 
 }
