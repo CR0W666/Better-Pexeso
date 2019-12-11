@@ -10,11 +10,11 @@ export class Logic {
         this.element = document.getElementById("numOfCards");
 
         //logic variables
-        this.cards = [];
-        this.foundPairs = [];
-        this.selectedPair = [];
-        this.thisSymbol;
-        this.clickCounter = document.getElementById("clicks");
+        this.cards = []; //all cards
+        this.foundPairs = []; //found pairs
+        this.selectedPair = []; //last clicked pair of cards
+        this.clickedCard; //last clicked card
+        this.clickCounter = document.getElementById("clicks"); 
         this.scoreDiv = document.getElementById("score");
         this.clicks = 0;
         this.score;
@@ -90,15 +90,38 @@ export class Logic {
 
     //called when a card is clicked
     _clicked(clickedCard) {   
+        
         console.log(clickedCard.children.item(0));
-        this.thisSymbol = clickedCard.children.item(0);
+        this.clickedCard = clickedCard;
         this._increaseClickCounter();
         this._showScore();
 
-        this._addToPair();
-    
-        
 
+
+        if(this._firstCard()) { //sets the first card if not set already, else continues
+            console.log("first card");
+        } else if (this._secondCard()) { //sets the second card if not set already, else continues
+            console.log("second card");
+        }
+
+        if(this._haveAPair()) { //if 2 cards were clicked, executes this
+            
+            if(this._compareSelectedSymbols()) { //if symbols are equal, executes this
+
+                this._foundAPair();//pushes into array
+                this._hideCards();//hides whole cards
+                this._resetPair();//resets the array with the clicked cards
+                this._checkWin();//checks if the player has won
+
+            } else { //if symbols are not equal, executes this
+
+                this._hideSymbols(); //hides the symbols
+                this._resetPair();  //resets the array with the clicked cards
+
+            }
+
+        }
+        
     }
 
     //increases the number of clicks
@@ -107,35 +130,66 @@ export class Logic {
         this.clickCounter.innerText = this.clicks;
     }
 
+    //displays the score
     _showScore() {
 
         this.scoreDiv.innerText = this._score();
 
     }
 
-    //adds selection to pair
-    _addToPair() {
+    //adds first selection to pair
+    _firstCard() {
         
-        this.selectedPair.push(this.thisSymbol);
+        if (this.selectedPair[0] == undefined) {
+
+
+            //Add clicked card to array
+            this.selectedPair.push(this.clickedCard);
+
+            //show the symbol
+            this.selectedPair[0].getElementsByClassName("symbol").item(0).style = "visibility: visible";
+
+            return true;
+
+        } 
+
+
+    }
+    //adds second selection to pair
+    _secondCard() {
+
+        if (this.selectedPair[1] == undefined) {
+
+            //Check if this card equals the first one
+            if (this._sameCardQ()) { //if not equal card
+
+                //Add clicked card to array
+                this.selectedPair.push(this.clickedCard);
+
+                //show the symbol
+                this.selectedPair[1].getElementsByClassName("symbol").item(0).style = "visibilty: shown;";
+
+                return true;
+            } else { //if equal card
+
+                return false;
+            }
+
+        }
 
     }
 
-    //removes the last element
-    _removeFromPair() {
-
-        this.selectedPair.length == 1;
-
-    }
-    
-    //resets the pair when 2 cards are clicked
+    //resets the array
     _resetPair() {
-        
-        this.selectedPair.length = 0;
+
+        setTimeout(()=> {
+            this.selectedPair = [];
+        }, 600);
 
     }
 
-    //asks how many cards are shown
-    _doIhaveAPair() {
+    //asks how many cards were clicked (present in the array)
+    _haveAPair() {
 
         if (this.selectedPair.length == 2) {
 
@@ -153,8 +207,9 @@ export class Logic {
     //compares the symbols of selected cards
     _compareSelectedSymbols() {
         
-        let firstSelected = this.selectedPair[0].title;
-        let secondSelected = this.selectedPair[1].title;
+        let firstSelected = this.selectedPair[0].getElementsByClassName("symbol").item(0).title;
+        let secondSelected = this.selectedPair[1].getElementsByClassName("symbol").item(0).title;
+
         if(firstSelected == secondSelected) {
 
             return true;
@@ -167,114 +222,72 @@ export class Logic {
 
     }
 
-    //handles error if the same card was clicked
-    _sameCardQ() {
-   
-        if (this.selectedPair > 0) {
 
-            let one = this.selectedPair[0].id;
-            let two = this.selectedPair[1].id;
 
-            if(one == two) {
+    //check if there aren't any cards left to find
+    _checkWin() {
 
-                return true;
+        setTimeout(() => {
 
+            if (this.foundPairs.length == this.numOfCards) {
+                alert("YOU WON"); //pop-up
+                location.reload(); //reloads the page
             } else {
 
-                return false;
-
             }
-
-        } else {
-
-            return false;
-
-        }
-        
-
-        
+        }, 600);
 
 
     }
 
-    //handles error if already paired card was clicked
-    _alreadFoundQ() {
-
-        if (this.foundPairs.includes(this.selectedPair[0])) {
-
+    //handles error if the same card was clicked
+    _sameCardQ() {
+       
+        if(this.clickedCard != this.selectedPair[0]) {
             return true;
-
-        } else if (this.selectedPair.length > 0) {
-
-            if(this.foundPairs.includes(this.selectedPair[1])) {
-
-                return true;
-
-            }
-            
-
         } else {
-
             return false;
-
         }
 
     }
 
-    //shows the symbol of the selected card
-    _showSymbol() {
-        
-        this.thisSymbol.style = "visibilty: shown;";
+    //hides cards
+    _hideCards() {
+
+        setTimeout(() => {
+            //hide first card
+            this.selectedPair[0].style = "visibility: hidden";
+
+            //hide second card
+            this.selectedPair[1].style = "visibility: hidden";
+        }, 600);
+
 
     }
 
-    //hides symbols
-    _hide() {
+    _hideSymbols() {
 
-        let one = this.selectedPair[0];
-        let two = this.selectedPair[1];
+        setTimeout(() => {
 
-        setTimeout(function() {
-            
-            one.style = "visibility: hidden";
-            two.style = "visibility: hidden";
+            //hide first symbol
+            this.selectedPair[0].getElementsByClassName("symbol").item(0).style = "visibility: hidden";
+            //hide second symbol
+            this.selectedPair[1].getElementsByClassName("symbol").item(0).style = "visibility: hidden";
 
-        }, 250);
+        }, 600);
 
     }
 
     //if a pair is found pushes it into an array
     _foundAPair() {
 
-        this.foundPairs.push(this.selectedPair[0]);
-        this.foundPairs.push(this.selectedPair[1]);
-
-    }
-
-    //hides only the last clicked symbol
-    _errorHide() {
-
-        this.thisSymbol.style = "visibility: hidden;";
-        
-    }
-
-    //checks what pairs have been found etc. and restores their visibility, hopefully not to be used
-    _handleVisibility() {
-
-        for(let i = 0; i < this.numOfCards; i++) {
-            if(clickedCard != this.cards[i]) {
-               if(this.foundPairs.includes(this.cards[i].children.item(0))) {
-                    this.cards[i].children.item(0).style = "visibility: shown";
-                } else {
-                    this.cards[i].children.item(0).style = "visibility: hidden;";
-                }
-           }
-        }
+        this.foundPairs.push(this.selectedPair[0], this.selectedPair[1]);
 
     }
 
     //calculates the score
     _score() {
+
         this.score = Math.floor((this.clicks / this.numOfCards) * 100);
         if (this.score >= 100) {
             //this.score = magic code to make sense;
