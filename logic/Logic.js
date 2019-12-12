@@ -79,6 +79,13 @@ export class Logic {
     this._increaseClickCounter();
     this._showScore();
 
+
+    /*
+
+    IMPORTANT NOTE?:
+    Too lazy to change _first/_secondCard() fcs to just return true or false and then do the logic here in _clicked or separate func...
+
+    */
     if (this._firstCard()) {
       //sets the first card if not set already, else continues
       //console.log("first card");
